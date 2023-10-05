@@ -56,12 +56,52 @@ function createDivsForColors(colorArray) {
     gameContainer.append(newDiv);
   }
 }
+let count = 0
+let fCard = null
+let sCardColor = null
+let fCardColor = null
+let sCard = null
 
 // TODO: Implement this function!
 function handleCardClick(event) {
-  // you can use event.target to see which element was clicked
-  console.log("you just clicked", event.target);
-}
+  if (count === 2) return;
+  let currentCard = event.target
+  currentCard.style.backgroundColor = currentCard.classList[0]
+  currentCard.classList.add(".flipped")
 
+  if (currentCard.classList.contains(".flipped")) {
+    count += 1
+  }
+  if (count === 1) {
+    fCard = currentCard
+    fCardColor = fCard.classList[0]
+    console.log(fCard)
+  }
+  if (count === 2) {
+    sCard = currentCard
+    sCardColor = sCard.classList[0]
+    console.log(sCard)
+  }
+  if (sCard === fCard) {
+    count = 1
+    return
+  }
+
+  if (count === 2 && fCardColor === sCardColor && fCard !== sCard) {
+    console.log("We have a match")
+    sCard.removeEventListener("click", handleCardClick);
+    fCard.removeEventListener("click", handleCardClick);
+    count = 0
+  } 
+  else if (count === 2 && fCardColor !== sCardColor) {
+    setTimeout(function() {
+      console.log("We do NOT have a match")
+      sCard.style.backgroundColor = ""
+      fCard.style.backgroundColor = ""  
+      count = 0
+    }, 1000)    
+  } 
+  // you can use event.target to see which element was clicked
+}  
 // when the DOM loads
 createDivsForColors(shuffledColors);
