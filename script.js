@@ -1,3 +1,5 @@
+
+
 document.addEventListener("DOMContentLoaded", function() {
   const gameContainer = document.getElementById("game");
 
@@ -59,10 +61,18 @@ document.addEventListener("DOMContentLoaded", function() {
   }
   let allUp = 0
   let count = 0
+  let score = 0
   let fCard = null
   let sCardColor = null
   let fCardColor = null
   let sCard = null
+  let lowestScore = localStorage.getItem("lowestScore")
+
+
+  function scoreKeeping () {
+    let scoreKeeper = document.querySelector("h2")
+    scoreKeeper.innerText = `Score: ${score} Lowest Score: ${lowestScore}`
+  }
 
   // TODO: Implement this function!
   function handleCardClick(event) {
@@ -76,18 +86,19 @@ document.addEventListener("DOMContentLoaded", function() {
     if (currentCard.classList.contains(".flipped")) {
       count += 1
       allUp += 1
+      score += 1
+      scoreKeeping()
+      
     }
     // saves the event Object for the first Card unveil
     if (count === 1) {
       fCard = currentCard
       fCardColor = fCard.classList[0]
-      console.log(fCard)
     }
     // saves the event Object for the second Card unveil
     if (count === 2) {
       sCard = currentCard
       sCardColor = sCard.classList[0]
-      console.log(sCard)
     }
     // secures that if you click the unveiled cards again, you do not get a match and be sure to always unveil 2
     // at the same time
@@ -106,18 +117,23 @@ document.addEventListener("DOMContentLoaded", function() {
       setTimeout(function() {
         console.log("We do NOT have a match")
         sCard.style.backgroundColor = ""
-        fCard.style.backgroundColor = ""  
+        fCard.style.backgroundColor = "" 
+        sCard.classList.remove(".flipped")
+        fCard.classList.remove(".flipped") 
         count = 0
         allUp -=2
       }, 1000)    
     } 
   if (allUp === COLORS.length) {
     alert("Game is Over!")
+    if (score < lowestScore) {
+      localStorage.setItem("lowestScore", score)
+    }
     location.reload()
   }
   }  
   // when the DOM loads
-  // for tomorrow: if button "start" is pressed the function below is executed
+  // if button "start" is pressed the function below is executed
   let btn = document.querySelector("button")
   btn.addEventListener("click", function() {
     createDivsForColors(shuffledColors)
